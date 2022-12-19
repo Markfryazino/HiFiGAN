@@ -24,7 +24,7 @@ class ResBlock(torch.nn.Module):
                     )
                 ]
             self.blocks.append(
-                torch.nn.Sequential(layers)
+                torch.nn.Sequential(*layers)
             )
 
     def forward(self, x):

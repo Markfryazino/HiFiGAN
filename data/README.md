@@ -1,0 +1,1 @@
+This is a folder for storing training data. Run [scripts/prepare_data.sh](../scripts/prepare_data.sh) to download it.
