@@ -1,4 +1,5 @@
 import torch
+import torch.nn.functional as F
 
 from typing import List
 
@@ -10,11 +11,11 @@ class ResBlock(torch.nn.Module):
     def __init__(self, n_channels: int, dilations: List[List[int]], kernel_size: int, lrelu_slope: float):
         super().__init__()
         self.blocks = torch.nn.ModuleList()
+        self.lrelu_slope = lrelu_slope
         for continual_dilations in dilations:
-            layers = []
+            layers = torch.nn.ModuleList()
             for dilation in continual_dilations:
-                layers += [
-                    torch.nn.LeakyReLU(negative_slope=lrelu_slope),
+                layers.append(
                     torch.nn.Conv1d(
                         in_channels=n_channels, 
                         out_channels=n_channels, 
@@ -22,14 +23,17 @@ class ResBlock(torch.nn.Module):
                         dilation=dilation,
                         padding=dilation2padding(kernel_size, dilation)
                     )
-                ]
-            self.blocks.append(
-                torch.nn.Sequential(*layers)
-            )
+                )
+            self.blocks.append(layers)
 
     def forward(self, x):
         for block in self.blocks:
-            x += block(x)
+            xb = x.clone()
+            for conv in block:
+                xb = F.leaky_relu(xb, negative_slope=self.lrelu_slope, inplace=False)
+                xb = conv(xb)
+
+            x += xb
         
         return x
 
@@ -84,7 +88,7 @@ class Generator(torch.nn.Module):
                     MRFLayer(config, hidden_dim // 2)
                 )
             )
-            hidden_dim // 2
+            hidden_dim //= 2
 
         self.post_conv = torch.nn.Conv1d(
             in_channels=hidden_dim,
@@ -96,5 +100,5 @@ class Generator(torch.nn.Module):
     def forward(self, x):
         x = self.pre_conv(x)
         x = self.blocks(x)
-        x = self.post_conv(x).squeeze(-1)
+        x = self.post_conv(x).squeeze(1)
         return torch.tanh(x)

@@ -9,7 +9,7 @@ from src.config import MelSpectrogramConfig
 
 class MelSpectrogram(nn.Module):
 
-    def __init__(self, config: MelSpectrogramConfig):
+    def __init__(self, config: MelSpectrogramConfig, center=True):
         super(MelSpectrogram, self).__init__()
 
         self.config = config
@@ -21,7 +21,8 @@ class MelSpectrogram(nn.Module):
             n_fft=config.n_fft,
             f_min=config.f_min,
             f_max=config.f_max,
-            n_mels=config.n_mels
+            n_mels=config.n_mels,
+            center=center
         )
 
         # The is no way to set power in constructor in 0.5.0 version.

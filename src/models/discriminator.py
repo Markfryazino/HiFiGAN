@@ -45,8 +45,9 @@ class PeriodDiscriminator(torch.nn.Module):
         
     def _reshape_input(self, x):
         batch_size, timesteps = x.size()
-        x = torch.nn.functional.pad(x, (0, self.period - timesteps % self.period), "reflect")
-        return x.view(batch_size, timesteps // self.period, self.period)
+        if timesteps % self.period > 0:
+            x = torch.nn.functional.pad(x, (0, self.period - timesteps % self.period), "reflect")
+        return x.view(batch_size, 1, timesteps // self.period + int(timesteps % self.period > 0), self.period)
 
     def forward(self, x):
         x = self._reshape_input(x)
@@ -85,7 +86,7 @@ class ScaleDiscriminator(torch.nn.Module):
             )
         
     def forward(self, x):
-        x = torch.unsqueeze(x, -1)
+        x = torch.unsqueeze(x, 1)
 
         hiddens = []
         for layer in self.blocks[:-1]:
@@ -93,7 +94,7 @@ class ScaleDiscriminator(torch.nn.Module):
             x = self.leaky_relu(x)
             hiddens.append(torch.flatten(torch.clone(x), 1))
 
-        return self.blocks[-1](x).squeeze(-1), torch.cat(hiddens, 1)
+        return torch.flatten(self.blocks[-1](x), 1), torch.cat(hiddens, 1)
 
 
 class TotalDiscriminator(torch.nn.Module):
@@ -132,4 +133,4 @@ class TotalDiscriminator(torch.nn.Module):
             hiddens.append(hidden)
             x = self.msd_pooling(x)
 
-        return torch.stack(predictions, 1), torch.cat(hiddens, 1)
+        return torch.cat(predictions, 1), torch.cat(hiddens, 1)

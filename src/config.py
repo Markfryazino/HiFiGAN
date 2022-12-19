@@ -51,3 +51,33 @@ class MelSpectrogramConfig:
 
     # value of melspectrograms if we fed a silence into `MelSpectrogram`
     pad_value: float = -11.5129251
+
+
+@dataclass
+class TrainingConfig:
+    train_path: str = "/repos/tts_project/data/LJSpeech-1.1"
+    inference_path: str = "/repos/tts_project/data/MarkovkaSpeech/mels"
+    logs_path: str = "/repos/tts_project/results"
+
+    segment_length: int = 8192
+    device: str = "cuda"
+    seed: int = 42
+
+    adam_betas: Tuple[float] = (0.8, 0.99)
+    lr_decay: float = 0.999
+    lr: float = 0.0002
+    batch_size: float = 64
+
+    l1_gamma: float = 45.
+    gan_gamma: float = 8.
+    fm_gamma: float = 8.
+
+    epochs: int = 3000
+    log_steps: int = 10
+    save_steps: int = 5000
+    eval_steps: int = 200
+
+    wandb_project: str = "HiFiGAN"
+
+    max_wav_value: float = 32768.0
+    sample_rate: int = 22050

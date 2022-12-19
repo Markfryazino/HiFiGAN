@@ -1,2 +1,4 @@
 wget
 gdown
+tqdm
+wandb
