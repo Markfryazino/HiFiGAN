@@ -31,9 +31,13 @@ def inference(generator, mel_path, log_path, max_wav_value, step, device, sample
     generator.eval()
     for file in os.listdir(mel_path):
         mel = torch.load(os.path.join(mel_path, file)).unsqueeze(0).to(device)
-        wav = (generator(mel).squeeze(0).cpu() * max_wav_value).to(torch.int16)
+        wav = generator(mel).squeeze(0).detach().cpu()
+        wav_alt = (wav * max_wav_value).to(torch.int16)
         wandb.log(
-            {"test/" + file.replace(".pt", ""): wandb.Audio(wav, sample_rate)},
+            {
+                "test/" + file.replace(".pt", ""): wandb.Audio(wav, sample_rate),
+                "test_alt/" + file.replace(".pt", ""): wandb.Audio(wav_alt, sample_rate),
+            },
             step=step
         )
     generator.train()

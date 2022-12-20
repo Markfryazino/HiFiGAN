@@ -68,14 +68,14 @@ class TrainingConfig:
     lr: float = 0.0002
     batch_size: float = 64
 
-    l1_gamma: float = 45.
-    gan_gamma: float = 8.
-    fm_gamma: float = 8.
+    l1_gamma: float = 1.
+    gan_gamma: float = 3.
+    fm_gamma: float = 20.
 
     epochs: int = 3000
     log_steps: int = 10
-    save_steps: int = 5000
-    eval_steps: int = 200
+    save_steps: int = 1000
+    eval_steps: int = 50
 
     wandb_project: str = "HiFiGAN"
 

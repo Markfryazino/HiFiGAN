@@ -1,5 +1,6 @@
 import torch
 import torch.nn.functional as F
+from torch.nn.utils import weight_norm
 
 from typing import List
 
@@ -16,13 +17,13 @@ class ResBlock(torch.nn.Module):
             layers = torch.nn.ModuleList()
             for dilation in continual_dilations:
                 layers.append(
-                    torch.nn.Conv1d(
+                    weight_norm(torch.nn.Conv1d(
                         in_channels=n_channels, 
                         out_channels=n_channels, 
                         kernel_size=kernel_size,
                         dilation=dilation,
                         padding=dilation2padding(kernel_size, dilation)
-                    )
+                    ))
                 )
             self.blocks.append(layers)
 
@@ -67,24 +68,24 @@ class Generator(torch.nn.Module):
         self.config = config
         self.blocks = torch.nn.Sequential()
 
-        self.pre_conv = torch.nn.Conv1d(
+        self.pre_conv = weight_norm(torch.nn.Conv1d(
             in_channels=config.mel_dimension,
             out_channels=config.upsampling_hidden_dim,
             kernel_size=config.pre_post_kernel_size,
             padding=config.pre_post_kernel_size // 2
-        )
+        ))
         
         hidden_dim = config.upsampling_hidden_dim
         for kernel_size, stride in zip(config.upsampling_kernels, config.upsampling_strides):
             self.blocks.append(
                 torch.nn.Sequential(
-                    torch.nn.ConvTranspose1d(
+                    weight_norm(torch.nn.ConvTranspose1d(
                         in_channels=hidden_dim,
                         out_channels=hidden_dim // 2,
                         kernel_size=kernel_size,
                         stride=stride,
                         padding=(kernel_size - stride) // 2
-                    ),
+                    )),
                     MRFLayer(config, hidden_dim // 2)
                 )
             )
