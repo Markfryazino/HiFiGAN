@@ -71,8 +71,8 @@ def prepare(train_config: TrainingConfig, melspec_config: MelSpectrogramConfig,
     generator.train()
     discriminator.train()
 
-    generator_opt = torch.optim.AdamW(generator.parameters(), lr=train_config.lr, betas=train_config.adam_betas)
-    discriminator_opt = torch.optim.AdamW(discriminator.parameters(), lr=train_config.lr, betas=train_config.adam_betas)
+    generator_opt = torch.optim.AdamW(generator.parameters(), lr=train_config.generator_lr, betas=train_config.adam_betas)
+    discriminator_opt = torch.optim.AdamW(discriminator.parameters(), lr=train_config.discriminator_lr, betas=train_config.adam_betas)
 
     generator_scheduler = torch.optim.lr_scheduler.ExponentialLR(generator_opt, train_config.lr_decay)
     discriminator_scheduler = torch.optim.lr_scheduler.ExponentialLR(discriminator_opt, train_config.lr_decay)

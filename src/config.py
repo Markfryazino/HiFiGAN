@@ -65,14 +65,15 @@ class TrainingConfig:
 
     adam_betas: Tuple[float] = (0.8, 0.99)
     lr_decay: float = 0.999
-    lr: float = 0.0002
+    generator_lr: float = 0.0002
+    discriminator_lr: float = 0.0002
     batch_size: float = 64
 
     l1_gamma: float = 1.
     gan_gamma: float = 3.
     fm_gamma: float = 20.
 
-    epochs: int = 3000
+    epochs: int = 500
     log_steps: int = 10
     save_steps: int = 1000
     eval_steps: int = 50
