@@ -30,9 +30,9 @@
     ```
     Этот запуск создаст папку `data/MarkovkaSpeech/generated` и положит туда вавки для примеров из MarkovkaSpeech.
 
-1. Чтобы вопроизвести обучение, можно запустить [train.py](./train.py).
+1. Чтобы вопроизвести обучение, можно запустить [run_training.py](./run_training.py).
     ```
-    python3 train.py
+    python3 run_training.py
     ```
 
 ## Немного про содержание репозитория
