@@ -7,7 +7,7 @@ mv LJSpeech-1.1 data/LJSpeech-1.1
 rm LJSpeech-1.1.tar.bz2
 
 # download audios for inference
-gdown 15sGIA_9_vd7wiJnm911win_EV4wgtFg
+gdown 15sGIA_9_vd7wiJnm911win_EV4wgtFg_
 unzip MarkovkaSpeech.zip
 mv MarkovkaSpeech data/
 rm MarkovkaSpeech.zip
